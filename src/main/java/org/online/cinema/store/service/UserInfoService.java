@@ -1,47 +1,42 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
 package org.online.cinema.store.service;
 
+import java.util.Optional;
 import org.online.cinema.store.entity.User;
 import org.online.cinema.store.entity.UserInfo;
 import org.online.cinema.store.repo.UserInfoRepository;
 import org.online.cinema.store.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class UserInfoService {
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private UserInfoRepository userInfoRepository;
+    @Autowired
+    private ContextHolderService contextHolder;
 
-    public UserInfo saveInfo(UserInfo userInfo) {
-
-        String email = getCurrentEmail();
-
-        User user = new User();
-
-        Optional<User> optional = userRepository.findByEmail(email);
-        if (optional.isPresent()) {
-            user = optional.get();
-        }
-
-        userInfo.setUser(user);
-
-        return userInfoRepository.save(userInfo);
+    public UserInfoService() {
     }
 
-    private String getCurrentEmail() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof UserDetails) {
-            return ((UserDetails) principal).getUsername();
+    public UserInfo saveInfo(UserInfo userInfo) {
+        return (UserInfo)this.userInfoRepository.save(userInfo);
+    }
+
+    public UserInfo getUserInfo() {
+        String email = this.contextHolder.getCurrentEmail();
+        Optional<User> user = this.userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            return this.userInfoRepository.findUserByUser((User)user.get());
         } else {
-            return principal.toString();
+            throw new UsernameNotFoundException("User not found");
         }
     }
 }

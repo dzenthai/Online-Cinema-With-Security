@@ -3,24 +3,20 @@ package org.online.cinema.api.security.controller;
 import jakarta.mail.MessagingException;
 import lombok.SneakyThrows;
 import org.online.cinema.api.security.verfication.service.EmailService;
+import org.online.cinema.api.security.verfication.service.TempUserService;
+import org.online.cinema.api.security.verfication.service.VerificationService;
 import org.online.cinema.data.dto.entity.UserDTO;
 import org.online.cinema.data.exceptionhandler.exception.UserAlreadyExistException;
-import org.online.cinema.api.security.verfication.service.TempUserService;
 import org.online.cinema.store.entity.User;
-import org.online.cinema.store.entity.UserInfo;
-import org.online.cinema.store.service.UserInfoService;
 import org.online.cinema.store.service.UserService;
-import org.online.cinema.api.security.verfication.service.VerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.Map;
-
-import static java.time.LocalDate.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -37,9 +33,6 @@ public class RegistrationController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private UserInfoService userInfoService;
 
     @PostMapping("/registration")
     public String registerUser(@RequestBody UserDTO user) throws MessagingException {
@@ -83,14 +76,6 @@ public class RegistrationController {
             User user = tempUserService.getTempUser(email);
             if (user != null) {
                 userService.registerUser(user);
-                LocalDate localDate = LocalDate.now();
-                UserInfo userInfo = UserInfo.builder()
-                        .user(user)
-                        .isSubscribed(false)
-                        .registrationDate(Date.from(localDate.atStartOfDay
-                                (ZoneId.systemDefault()).toInstant()))
-                        .build();
-                userInfoService.saveInfo(userInfo);
                 tempUserService.removeTempUser(email);
                 return ResponseEntity.ok("Email verified successfully.");
             } else {

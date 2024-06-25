@@ -1,31 +1,41 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
 package org.online.cinema.store.service;
 
-//import org.online.cinema.security.util.JWTUtility;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.Optional;
 import org.online.cinema.store.entity.User;
+import org.online.cinema.store.entity.UserInfo;
 import org.online.cinema.store.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 public class UserService {
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    @Lazy
+    private UserInfoService userInfoService;
+
+    public UserService() {
+    }
 
     public User findByEmail(String email) {
-
         User user = null;
-
-        Optional<User> optionalUser = userRepository.findByEmail(email);
+        Optional<User> optionalUser = this.userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
-            user = optionalUser.get();
+            user = (User)optionalUser.get();
         }
 
         return user;
@@ -33,9 +43,11 @@ public class UserService {
 
     @Transactional
     public User registerUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-
+        user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+        this.userRepository.save(user);
+        LocalDate localDate = LocalDate.now();
+        UserInfo userInfo = UserInfo.builder().user(user).isSubscribed(false).registrationDate(Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant())).build();
+        this.userInfoService.saveInfo(userInfo);
         return user;
     }
 }
