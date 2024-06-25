@@ -1,6 +1,5 @@
 package org.online.cinema.api.client.controller;
 
-import org.online.cinema.store.entity.UserInfo;
 import org.online.cinema.store.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
