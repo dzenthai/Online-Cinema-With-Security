@@ -1,4 +1,4 @@
-package org.online.cinema.api.security.domain;
+package org.online.cinema.security.domain;
 
 import org.online.cinema.store.entity.User;
 import org.springframework.security.core.GrantedAuthority;

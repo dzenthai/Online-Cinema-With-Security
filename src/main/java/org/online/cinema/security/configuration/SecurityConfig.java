@@ -1,6 +1,6 @@
-package org.online.cinema.api.security.configuration;
+package org.online.cinema.security.configuration;
 
-import org.online.cinema.api.security.service.CustomUserDetailsService;
+import org.online.cinema.security.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;

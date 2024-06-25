@@ -1,4 +1,4 @@
-package org.online.cinema.api.security.verfication.service;
+package org.online.cinema.security.verfication.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;

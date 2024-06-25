@@ -1,8 +1,3 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package org.online.cinema.api.client.controller;
 
 import org.online.cinema.data.dto.entity.UserInfoDTO;
@@ -30,7 +25,11 @@ public class UserInfoController {
         if (userInfo == null) {
             throw new RuntimeException("User info not found");
         } else {
-            return UserInfoDTO.builder().first_name(userInfo.getFirstName()).last_name(userInfo.getLastName()).gender(userInfo.getGender()).registration_date(userInfo.getRegistrationDate()).is_subscribed(userInfo.isSubscribed()).build();
+            return UserInfoDTO.builder()
+                    .first_name(userInfo.getFirstName())
+                    .last_name(userInfo.getLastName())
+                    .gender(userInfo.getGender())
+                    .build();
         }
     }
 
@@ -43,7 +42,6 @@ public class UserInfoController {
             userInfo.setFirstName(userInfoDTO.getFirst_name());
             userInfo.setLastName(userInfoDTO.getLast_name());
             userInfo.setGender(userInfoDTO.getGender());
-            userInfo.setSubscribed(userInfoDTO.is_subscribed());
             return this.userInfoService.saveInfo(userInfo);
         }
     }
