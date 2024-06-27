@@ -4,9 +4,9 @@ import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.SneakyThrows;
-import org.online.cinema.security.verfication.service.EmailService;
-import org.online.cinema.security.verfication.service.TempUserService;
-import org.online.cinema.security.verfication.service.VerificationService;
+import org.online.cinema.security.verfication.registration.service.VerificationEmailService;
+import org.online.cinema.security.verfication.registration.service.TempUserService;
+import org.online.cinema.security.verfication.registration.service.VerificationService;
 import org.online.cinema.data.dto.entity.UserDTO;
 import org.online.cinema.data.exceptionhandler.exception.UserAlreadyExistException;
 import org.online.cinema.store.entity.User;
@@ -30,7 +30,7 @@ public class RegistrationController {
     private TempUserService tempUserService;
 
     @Autowired
-    private EmailService emailService;
+    private VerificationEmailService verificationEmailService;
 
     @Autowired
     private VerificationService verificationService;
@@ -90,7 +90,7 @@ public class RegistrationController {
                         .build();
 
                 tempUserService.saveTempUser(email, tempUser);
-                emailService.sendVerificationEmail(email, code);
+                verificationEmailService.sendVerificationEmail(email, code);
                 verificationService.saveVerificationCode(email, code);
 
                 return "Registration successful. Check your email for the verification code.";

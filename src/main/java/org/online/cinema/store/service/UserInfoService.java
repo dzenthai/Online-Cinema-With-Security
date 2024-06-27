@@ -1,6 +1,7 @@
 package org.online.cinema.store.service;
 
 import java.util.Optional;
+
 import org.online.cinema.store.entity.User;
 import org.online.cinema.store.entity.UserInfo;
 import org.online.cinema.store.repo.UserInfoRepository;
@@ -22,16 +23,47 @@ public class UserInfoService {
     }
 
     public UserInfo saveInfo(UserInfo userInfo) {
-        return (UserInfo)this.userInfoRepository.save(userInfo);
+        if (userInfo.isSubscribed()) {
+            User user = null;
+            String email = this.contextHolder.getCurrentEmail();
+            Optional<User> optional = this.userRepository.findByEmail(email);
+            if (optional.isPresent()) {
+                user = optional.get();
+                this.userInfoRepository.findUserByUser(user);
+                user.setRole(user.getRole() + ", SUBSCRIBED");
+            } else {
+                throw new UsernameNotFoundException("User not found");
+            }
+        }
+        return this.userInfoRepository.save(userInfo);
     }
 
     public UserInfo getUserInfo() {
         String email = this.contextHolder.getCurrentEmail();
         Optional<User> user = this.userRepository.findByEmail(email);
         if (user.isPresent()) {
-            return this.userInfoRepository.findUserByUser((User)user.get());
+            return this.userInfoRepository.findUserByUser(user.get());
         } else {
             throw new UsernameNotFoundException("User not found");
         }
+    }
+
+//    public UserInfo addSubscriptionToUser(UserInfo userInfo) {
+//        String email = this.contextHolder.getCurrentEmail();
+//        User user = null;
+//        Optional<User> optional = this.userRepository.findByEmail(email);
+//        if (optional.isPresent()) {
+//            user = optional.get();
+//            userInfo = this.userInfoRepository.findUserByUser(optional.get());
+//            userInfo.setSubscribed(true);
+//            user.setRole(user.getRole() + ", SUBSCRIBED");
+//            return this.userInfoRepository.save(userInfo);
+//        } else {
+//            throw new UsernameNotFoundException("User not found");
+//        }
+//    }
+
+    public UserInfo getUserInfoByEmail(String email) {
+        return userInfoRepository.findByUser_Email(email);
     }
 }

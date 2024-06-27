@@ -1,4 +1,4 @@
-package org.online.cinema.security.verfication.service;
+package org.online.cinema.security.verfication.registration.service;
 
 import org.online.cinema.store.entity.User;
 import org.springframework.stereotype.Service;

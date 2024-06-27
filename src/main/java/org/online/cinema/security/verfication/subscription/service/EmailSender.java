@@ -1,4 +1,4 @@
-package org.online.cinema.security.verfication.service;
+package org.online.cinema.security.verfication.subscription.service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -11,7 +11,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 @Service
-public class EmailService {
+public class EmailSender {
 
     @Autowired
     private JavaMailSender mailSender;
@@ -22,12 +22,12 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String from;
 
-    public void sendVerificationEmail(String to, String token) throws MessagingException {
+    public void sendSubscriptionEmail(String to, String subscriptionLink) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-        String subject = "Email Verification";
-        String content = buildEmailContent(token);
+        String subject = "Subscription Confirmation";
+        String content = buildEmailContent(subscriptionLink);
 
         helper.setTo(to);
         helper.setFrom(from);
@@ -37,10 +37,10 @@ public class EmailService {
         mailSender.send(message);
     }
 
-    private String buildEmailContent(String token) {
+    private String buildEmailContent(String subscriptionLink) {
         Context context = new Context();
-        context.setVariable("token", token);
+        context.setVariable("subscriptionLink", subscriptionLink);
 
-        return templateEngine.process("verification-email", context);
+        return templateEngine.process("subscription-email", context);
     }
 }

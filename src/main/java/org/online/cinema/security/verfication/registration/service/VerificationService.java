@@ -1,4 +1,4 @@
-package org.online.cinema.security.verfication.service;
+package org.online.cinema.security.verfication.registration.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.Random;
-import java.util.UUID;
 
 @Service
 public class VerificationService {
