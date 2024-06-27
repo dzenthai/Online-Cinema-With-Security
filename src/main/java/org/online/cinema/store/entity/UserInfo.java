@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -45,5 +46,7 @@ public class UserInfo {
     @Column(name = "is_subscribed")
     private boolean isSubscribed;
     @Column(name = "registration_date")
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private Date registrationDate;
 }

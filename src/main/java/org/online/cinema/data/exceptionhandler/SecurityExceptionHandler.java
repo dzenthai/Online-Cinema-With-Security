@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class SecurityExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<Object> globalExceptionHandler(UserAlreadyExistException ex) {
+    public ResponseEntity<Object> securityExceptionHandler(UserAlreadyExistException ex) {
         ExceptionInfoDTO dto = new ExceptionInfoDTO();
         dto.setInfo(ex.getMessage());
         return new ResponseEntity<>(dto, HttpStatus.BAD_REQUEST);

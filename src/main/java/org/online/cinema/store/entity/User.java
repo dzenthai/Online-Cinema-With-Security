@@ -11,6 +11,9 @@
 package org.online.cinema.store.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,10 +29,10 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    //    @Max(value = 64, message = "Email must contain no more than 64 characters.")
-//    @Min(value = 6, message = "An email must consist of at least 6 characters.")
-//    @Pattern(regexp = "^(.+)@(\\S+)$", message = "Email should be in the format 'your_email@gmail.com'," +
-//            " where 'something' can contain any characters and 'domain' should not contain spaces.")
+    @Pattern(regexp = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]" +
+            "+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$",
+            message = "Email should be in the format 'your_email@gmail.com'," +
+            " where 'something' can contain any characters and 'domain' should not contain spaces.")
     @Column(nullable = false, unique = true)
     private String email;
     @Column(nullable = false)

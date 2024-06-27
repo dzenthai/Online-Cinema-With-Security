@@ -1,6 +1,8 @@
 package org.online.cinema.security.controller;
 
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 import lombok.SneakyThrows;
 import org.online.cinema.security.verfication.service.EmailService;
 import org.online.cinema.security.verfication.service.TempUserService;
@@ -11,12 +13,14 @@ import org.online.cinema.store.entity.User;
 import org.online.cinema.store.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -35,28 +39,62 @@ public class RegistrationController {
     private UserService userService;
 
     @PostMapping("/registration")
-    public String registerUser(@RequestBody UserDTO user) throws MessagingException {
+    public String registerUser(@Valid @RequestBody UserDTO user, BindingResult bindingResult) throws MessagingException {
 
         String email = user.getEmail();
 
+        /**
+         * Validation adding
+         */
+
         if (userService.findByEmail(email) != null) {
             throw new UserAlreadyExistException("User with email - %s, already exist.".formatted(email));
+
+        }
+        if (!email.matches("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]" +
+                "+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$")) {
+            throw new ValidationException("Email should be in the format 'your_email@gmail.com'," +
+                    " where 'something' can contain any characters and 'domain' should not contain spaces.");
+        }
+        if (user.getPassword().length() < 8) {
+            throw new ValidationException("Password length must be at least 8 characters.");
+        }
+        if (!user.getPassword().matches(".*\\d.*")) {
+            throw new ValidationException("Password must contain at least one digit.");
+        }
+        if (!user.getPassword().matches(".*[a-z].*")) {
+            throw new ValidationException("Password must contain at least one lowercase letter.");
+        }
+        if (!user.getPassword().matches(".*[A-Z].*")) {
+            throw new ValidationException("Password must contain at least one uppercase letter.");
+        }
+        if (!user.getPassword().matches(".*[!@#$%&*].*")) {
+            throw new ValidationException("Password must have at least one special character (e.g., @, #, $, %, etc.).");
+        }
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         } else {
+            {
 
-        String code = verificationService.generateVerificationCode();
+                /**
+                 * Generating a random code and sending it to the user's email
+                 */
 
-        User tempUser = User.builder()
-                .email(email)
-                .password(user.getPassword())
-                .role("ROLE_USER")
-                .enabled(false)
-                .build();
+                String code = verificationService.generateVerificationCode();
 
-            tempUserService.saveTempUser(email, tempUser);
-            emailService.sendVerificationEmail(email, code);
-            verificationService.saveVerificationCode(email, code);
+                User tempUser = User.builder()
+                        .email(email)
+                        .password(user.getPassword())
+                        .role("ROLE_USER")
+                        .enabled(false)
+                        .build();
 
-            return "Registration successful. Check your email for the verification code.";
+                tempUserService.saveTempUser(email, tempUser);
+                emailService.sendVerificationEmail(email, code);
+                verificationService.saveVerificationCode(email, code);
+
+                return "Registration successful. Check your email for the verification code.";
+            }
         }
     }
 
