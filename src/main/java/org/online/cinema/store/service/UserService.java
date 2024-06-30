@@ -15,17 +15,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
+
     @Lazy
+    @Autowired
     private UserInfoService userInfoService;
 
     public UserService() {
     }
 
+    @Transactional
     public User findByEmail(String email) {
         User user = null;
         Optional<User> optionalUser = this.userRepository.findByEmail(email);

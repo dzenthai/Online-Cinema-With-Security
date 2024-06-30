@@ -8,7 +8,7 @@ import java.time.Duration;
 import java.util.UUID;
 
 @Service
-public class SubscribeService {
+public class SubscriptionService {
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;

@@ -5,10 +5,10 @@ import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.SneakyThrows;
 import org.online.cinema.security.verfication.registration.service.VerificationEmailService;
-import org.online.cinema.security.verfication.registration.service.TempUserService;
+import org.online.cinema.security.service.TempUserService;
 import org.online.cinema.security.verfication.registration.service.VerificationService;
 import org.online.cinema.data.dto.entity.UserDTO;
-import org.online.cinema.data.exceptionhandler.exception.UserAlreadyExistException;
+import org.online.cinema.data.exception.UserException;
 import org.online.cinema.store.entity.User;
 import org.online.cinema.store.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ public class RegistrationController {
          */
 
         if (userService.findByEmail(email) != null) {
-            throw new UserAlreadyExistException("User with email - %s, already exist.".formatted(email));
+            throw new UserException("User with email - %s, already exist.".formatted(email));
 
         }
         if (!email.matches("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]" +
@@ -93,7 +93,7 @@ public class RegistrationController {
                 verificationEmailService.sendVerificationEmail(email, code);
                 verificationService.saveVerificationCode(email, code);
 
-                return "Registration successful. Check your email for the verification code.";
+                return "Registration successful. Check your email - %s for the verification code.".formatted(email);
             }
         }
     }
