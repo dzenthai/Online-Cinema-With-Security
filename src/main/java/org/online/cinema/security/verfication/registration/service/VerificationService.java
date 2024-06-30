@@ -32,4 +32,8 @@ public class VerificationService {
         String storedCode = redisTemplate.opsForValue().get(email);
         return code.equals(storedCode);
     }
+
+    public void deleteVerificationCode(String email) {
+        redisTemplate.delete(email);
+    }
 }

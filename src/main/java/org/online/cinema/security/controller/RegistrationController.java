@@ -115,6 +115,7 @@ public class RegistrationController {
             if (user != null) {
                 userService.registerUser(user);
                 tempUserService.removeTempUser(email);
+                verificationService.deleteVerificationCode(email);
                 return ResponseEntity.ok("Email verified successfully.");
             } else {
                 return ResponseEntity.badRequest().body("No user data found for the provided email.");

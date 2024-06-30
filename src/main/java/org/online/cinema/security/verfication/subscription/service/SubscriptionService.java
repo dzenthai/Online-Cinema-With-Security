@@ -29,4 +29,8 @@ public class SubscriptionService {
         String storedEmail = redisTemplate.opsForValue().get(token);
         return email.equals(storedEmail);
     }
+
+    public void deleteSubscriptionToken(String email) {
+        redisTemplate.delete(email);
+    }
 }

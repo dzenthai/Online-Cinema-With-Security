@@ -85,6 +85,7 @@ public class UserController {
             UserInfo userInfo = userInfoService.getUserInfoByEmail(email);
             userInfo.setSubscribed(true);
             userInfoService.saveInfo(userInfo);
+            subscriptionService.deleteSubscriptionToken(token);
             return new RedirectView("/api/user/info");
         } else {
             throw new UserInfoException("Invalid or expired token.");
