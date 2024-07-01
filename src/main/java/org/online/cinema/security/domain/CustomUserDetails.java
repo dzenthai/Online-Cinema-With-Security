@@ -1,6 +1,6 @@
 package org.online.cinema.security.domain;
 
-import org.online.cinema.store.entity.User;
+import org.online.cinema.user.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

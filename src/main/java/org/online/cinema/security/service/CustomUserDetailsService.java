@@ -1,8 +1,8 @@
 package org.online.cinema.security.service;
 
 import org.online.cinema.security.domain.CustomUserDetails;
-import org.online.cinema.store.entity.User;
-import org.online.cinema.store.repo.UserRepository;
+import org.online.cinema.user.entity.User;
+import org.online.cinema.user.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

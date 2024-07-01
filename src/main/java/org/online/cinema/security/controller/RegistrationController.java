@@ -4,14 +4,16 @@ import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.SneakyThrows;
-import org.online.cinema.security.verfication.registration.service.VerificationEmailService;
+import lombok.extern.slf4j.Slf4j;
+import org.online.cinema.security.service.registration.VerificationEmailService;
 import org.online.cinema.security.service.TempUserService;
-import org.online.cinema.security.verfication.registration.service.VerificationService;
-import org.online.cinema.data.dto.entity.UserDTO;
-import org.online.cinema.data.exception.UserException;
-import org.online.cinema.store.entity.User;
-import org.online.cinema.store.service.UserService;
+import org.online.cinema.security.service.registration.VerificationService;
+import org.online.cinema.common.dto.UserDTO;
+import org.online.cinema.common.exception.UserException;
+import org.online.cinema.user.entity.User;
+import org.online.cinema.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 import java.util.Objects;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/auth")
 public class RegistrationController {
@@ -43,11 +46,14 @@ public class RegistrationController {
 
         String email = user.getEmail();
 
+        log.info("User registration: email={}", email);
+
         /**
          * Validation adding
          */
 
         if (userService.findByEmail(email) != null) {
+            log.error("User already exist: email={}", email);
             throw new UserException("User with email - %s, already exist.".formatted(email));
 
         }
@@ -72,6 +78,7 @@ public class RegistrationController {
             throw new ValidationException("Password must have at least one special character (e.g., @, #, $, %, etc.).");
         }
         if (bindingResult.hasErrors()) {
+            log.error("User registration validation failed: email={}, status={}", email, HttpStatus.BAD_REQUEST.getReasonPhrase());
             throw new ValidationException(Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage());
         } else {
             {
@@ -79,6 +86,8 @@ public class RegistrationController {
                 /**
                  * Generating a random code and sending it to the user's email
                  */
+
+                log.info("Registration successful: email={}, status={}", email, HttpStatus.OK.getReasonPhrase());
 
                 String code = verificationService.generateVerificationCode();
 
@@ -93,6 +102,8 @@ public class RegistrationController {
                 verificationEmailService.sendVerificationEmail(email, code);
                 verificationService.saveVerificationCode(email, code);
 
+                log.info("Generating a verification code: email={}", email);
+
                 return "Registration successful. Check your email - %s for the verification code.".formatted(email);
             }
         }
@@ -103,6 +114,7 @@ public class RegistrationController {
     @PostMapping("/verify")
     public ResponseEntity<String> verifyUser(@RequestBody Map<String, String> request) {
         if (!request.containsKey("email") || !request.containsKey("code")) {
+            log.error("Email and code must be provided: status={}", HttpStatus.BAD_REQUEST.getReasonPhrase());
             return ResponseEntity.badRequest().body("Email and code must be provided.");
         }
 
@@ -116,11 +128,14 @@ public class RegistrationController {
                 userService.registerUser(user);
                 tempUserService.removeTempUser(email);
                 verificationService.deleteVerificationCode(email);
+                log.info("Email verified successfully: email={}, status={}", email, HttpStatus.OK.getReasonPhrase());
                 return ResponseEntity.ok("Email verified successfully.");
             } else {
+                log.error("No user data found for the provided email: email={}, status={}", email, HttpStatus.BAD_REQUEST.getReasonPhrase());
                 return ResponseEntity.badRequest().body("No user data found for the provided email.");
             }
         } else {
+            log.error("Invalid or expired verification code: email={}, status={}", email, HttpStatus.BAD_REQUEST.getReasonPhrase());
             return ResponseEntity.badRequest().body("Invalid or expired verification code.");
         }
     }
