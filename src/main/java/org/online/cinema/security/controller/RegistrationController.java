@@ -5,14 +5,15 @@ import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.online.cinema.security.service.registration.VerificationEmailService;
-import org.online.cinema.security.service.TempUserService;
-import org.online.cinema.security.service.registration.VerificationService;
 import org.online.cinema.common.dto.UserDTO;
 import org.online.cinema.common.exception.UserException;
+import org.online.cinema.security.service.TempUserService;
+import org.online.cinema.security.service.registration.VerificationEmailService;
+import org.online.cinema.security.service.registration.VerificationService;
 import org.online.cinema.user.entity.User;
 import org.online.cinema.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -40,6 +41,9 @@ public class RegistrationController {
 
     @Autowired
     private UserService userService;
+
+    @Value("${default.user.role}")
+    private String defaultRole;
 
     @PostMapping("/registration")
     public String registerUser(@Valid @RequestBody UserDTO user, BindingResult bindingResult) throws MessagingException {
@@ -94,7 +98,7 @@ public class RegistrationController {
                 User tempUser = User.builder()
                         .email(email)
                         .password(user.getPassword())
-                        .role("ROLE_USER")
+                        .role(defaultRole)
                         .enabled(false)
                         .build();
 
