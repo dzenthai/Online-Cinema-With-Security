@@ -95,6 +95,8 @@ public class RegistrationController {
 
                 String code = verificationService.generateVerificationCode();
 
+                log.info("Generating a verification code: email={}", email);
+
                 User tempUser = User.builder()
                         .email(email)
                         .password(user.getPassword())
@@ -103,10 +105,8 @@ public class RegistrationController {
                         .build();
 
                 tempUserService.saveTempUser(email, tempUser);
-                verificationEmailService.sendVerificationEmail(email, code);
                 verificationService.saveVerificationCode(email, code);
-
-                log.info("Generating a verification code: email={}", email);
+                verificationEmailService.sendVerificationEmail(email, code);
 
                 return "Registration successful. Check your email - %s for the verification code.".formatted(email);
             }

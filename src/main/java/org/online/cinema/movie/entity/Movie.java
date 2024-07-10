@@ -34,12 +34,12 @@ public class Movie {
     @Column(name = "subscribe_only")
     private boolean subscribeOnly;
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinTable(name = "movie_actors",
+    @JoinTable(schema = "online_cinema", name = "movie_actors",
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "actor_id"))
     private List<Actor> actors;
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinTable(name = "movie_directors",
+    @JoinTable(schema = "online_cinema", name = "movie_directors",
             joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "director_id"))
     private List<Director> directors;

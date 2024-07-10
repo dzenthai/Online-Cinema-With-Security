@@ -2,6 +2,7 @@ package org.online.cinema.user.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.online.cinema.common.exception.UserException;
+import org.online.cinema.security.service.ContextHolderService;
 import org.online.cinema.user.entity.User;
 import org.online.cinema.user.entity.UserInfo;
 import org.online.cinema.user.repo.UserInfoRepository;

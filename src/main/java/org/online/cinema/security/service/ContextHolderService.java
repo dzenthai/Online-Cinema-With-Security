@@ -1,4 +1,4 @@
-package org.online.cinema.user.service;
+package org.online.cinema.security.service;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,7 +10,7 @@ public class ContextHolderService {
     public ContextHolderService() {
     }
 
-    protected String getCurrentEmail() {
+    public String getCurrentEmail() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return principal instanceof UserDetails ? ((UserDetails) principal).getUsername() : principal.toString();
     }

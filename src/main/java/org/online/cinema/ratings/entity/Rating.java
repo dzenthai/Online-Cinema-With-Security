@@ -1,6 +1,8 @@
 package org.online.cinema.ratings.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.online.cinema.movie.entity.Movie;
@@ -11,7 +13,9 @@ import java.util.Date;
 
 @Data
 @Entity
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(schema = "online_cinema", name = "ratings")
 public class Rating {
     @Id

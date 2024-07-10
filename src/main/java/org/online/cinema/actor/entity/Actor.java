@@ -23,7 +23,7 @@ public class Actor {
     @Column(name = "age")
     private int age;
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinTable(name = "movie_actors",
+    @JoinTable(schema = "online_cinema", name = "movie_actors",
             joinColumns = @JoinColumn(name = "actor_id"),
             inverseJoinColumns = @JoinColumn(name = "movie_id"))
     private List<Movie> movies;
