@@ -8,8 +8,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 public class UserInfoDTO {
-    private String first_name;
-    private String last_name;
+    private String username;
     private String gender;
     private final Date registration_date;
     private boolean is_subscribed;

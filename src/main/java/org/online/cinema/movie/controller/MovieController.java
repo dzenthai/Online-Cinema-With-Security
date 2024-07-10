@@ -54,9 +54,9 @@ public class MovieController {
     }
 
     @GetMapping("/movies/{genre}")
-    public List<MovieDTO> getMovieByGenre(@PathVariable String genre) {
+    public List<MovieDTO> getMoviesByGenre(@PathVariable String genre) {
 
-        List<MovieDTO> movies = movieService.getMovieByGenre(genre);
+        List<MovieDTO> movies = movieService.getMoviesByGenre(genre);
 
         if (movies.isEmpty()) {
             log.error("Movies with genre={} not found in database", genre);
@@ -69,14 +69,20 @@ public class MovieController {
     }
 
     @GetMapping("/movies/subscription")
-    public List<MovieDTO> getMovieSubscriptionRequired() {
+    public List<MovieDTO> getMoviesSubscriptionRequired() {
         log.info("Getting movies with subscription");
-        return movieService.getMovieSubscriptionRequired();
+        return movieService.getMoviesSubscriptionRequired();
     }
 
     @GetMapping("/movies/free")
-    public List<MovieDTO> getMovieNoSubscriptionRequired() {
+    public List<MovieDTO> getMoviesNoSubscriptionRequired() {
         log.info("Getting movies with no subscription");
-        return movieService.getMovieNoSubscriptionRequired();
+        return movieService.getMoviesNoSubscriptionRequired();
+    }
+
+    @GetMapping("/movies/newness")
+    public List<MovieDTO> getMoviesByNewness() {
+        log.info("Getting movies by newness");
+        return movieService.getMoviesByNewness();
     }
 }

@@ -37,8 +37,7 @@ public class UserController {
         } else {
             log.info("Getting all information about user: email:{}", userInfo.getUser().getEmail());
             return UserInfoDTO.builder()
-                    .first_name(userInfo.getFirstName())
-                    .last_name(userInfo.getLastName())
+                    .username(userInfo.getUsername())
                     .gender(userInfo.getGender())
                     .registration_date(userInfo.getRegistrationDate())
                     .is_subscribed(userInfo.isSubscribed())
@@ -55,8 +54,7 @@ public class UserController {
         if (!userInfoDTO.getGender().equals("Male") && !userInfoDTO.getGender().equals("Female")) {
             throw new UserInfoException("Invalid gender selection. Please choose either 'Male' or 'Female'");
         } else {
-            userInfo.setFirstName(userInfoDTO.getFirst_name());
-            userInfo.setLastName(userInfoDTO.getLast_name());
+            userInfo.setUsername(userInfoDTO.getUsername());
             userInfo.setGender(userInfoDTO.getGender());
             log.info("Updating information about user: email:{}", userInfo.getUser().getEmail());
             return userInfoService.saveInfo(userInfo);

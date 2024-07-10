@@ -12,6 +12,8 @@ import org.online.cinema.ratings.entity.Rating;
 import org.online.cinema.ratings.repo.RatingRepository;
 import org.online.cinema.security.service.ContextHolderService;
 import org.online.cinema.user.entity.User;
+import org.online.cinema.user.entity.UserInfo;
+import org.online.cinema.user.repo.UserInfoRepository;
 import org.online.cinema.user.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,9 @@ public class RatingService {
 
     @Autowired
     private ContextHolderService contextHolder;
+
+    @Autowired
+    private UserInfoRepository userInfoRepository;
 
     @Transactional
     public List<RatingOutputDTO> getRatingsByMovieId(Long movieId) {
@@ -112,9 +117,12 @@ public class RatingService {
     }
 
     private RatingOutputDTO convertToDTO(Rating rating) {
-        log.info("Converting rating={}, to DTO", rating);
+
+        UserInfo userInfo = userInfoRepository.findUserByUser(rating.getUser());
+
+        log.info("Converting rating for the movie={}, to DTO", rating.getMovie().getTitle());
         return RatingOutputDTO.builder()
-                .user_email(rating.getUser().getEmail())
+                .username(userInfo.getUsername())
                 .movie_name(rating.getMovie().getTitle())
                 .review(rating.getReview())
                 .rating(rating.getRating())

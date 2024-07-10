@@ -8,7 +8,7 @@ import java.util.Date;
 @Data
 @Builder
 public class RatingOutputDTO {
-    private String user_email;
+    private String username;
     private String movie_name;
     private String review;
     private int rating;

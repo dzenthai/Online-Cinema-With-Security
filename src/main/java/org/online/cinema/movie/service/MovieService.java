@@ -87,7 +87,7 @@ public class MovieService {
     }
 
     @Transactional
-    public List<MovieDTO> getMovieByGenre(String genre) {
+    public List<MovieDTO> getMoviesByGenre(String genre) {
 
         List<Movie> movies = movieRepository.findByGenre(genre)
                 .stream()
@@ -100,7 +100,7 @@ public class MovieService {
     }
 
     @Transactional
-    public List<MovieDTO> getMovieSubscriptionRequired() {
+    public List<MovieDTO> getMoviesSubscriptionRequired() {
 
         List<Movie> movies = movieRepository.findAll()
                 .stream()
@@ -115,7 +115,7 @@ public class MovieService {
     }
 
     @Transactional
-    public List<MovieDTO> getMovieNoSubscriptionRequired() {
+    public List<MovieDTO> getMoviesNoSubscriptionRequired() {
 
         List<Movie> movies = movieRepository.findAll()
                 .stream()
@@ -129,8 +129,21 @@ public class MovieService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public List<MovieDTO> getMoviesByNewness() {
+
+        List<Movie> movies = movieRepository.findAll().stream()
+                .sorted(Comparator.comparing(Movie::getReleaseDate).reversed())
+                .limit(10)
+                .toList();
+
+        log.info("Getting all movies by newness");
+        return movies.stream().map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
     private MovieDTO convertToDTO(Movie movie) {
-        log.info("Converting movie={}, to DTO", movie);
+        log.info("Converting movie={}, to DTO", movie.getTitle());
         return MovieDTO.builder()
                 .title(movie.getTitle())
                 .genre(movie.getGenre())

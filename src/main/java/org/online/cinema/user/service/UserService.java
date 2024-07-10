@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 
 import lombok.extern.slf4j.Slf4j;
 import org.online.cinema.user.entity.User;
@@ -47,13 +48,18 @@ public class UserService {
     public void registerUser(User user) {
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
         this.userRepository.save(user);
+
+        String username = user.getEmail().split("@")[0] + "-" + UUID.randomUUID().toString().substring(0,16);
+
         LocalDate localDate = LocalDate.now();
         UserInfo userInfo = UserInfo.builder().user(user)
+                .username(username)
+                .gender("Not specified")
                 .isSubscribed(false).
                 registrationDate(Date.from(localDate
                         .atStartOfDay(ZoneId.systemDefault()).toInstant()))
                 .build();
         this.userInfoService.saveInfo(userInfo);
-        log.info("Saving user: email={}", user.getEmail());
+        log.info("Saving user: email={}, username={}", user.getEmail(), userInfo.getUsername());
     }
 }
