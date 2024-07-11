@@ -1,3 +1,18 @@
+/**
+ * CREATE TABLE online_cinema.ratings
+ * (
+ * id       SERIAL PRIMARY KEY NOT NULL,
+ * user_id  BIGINT,
+ * movie_id BIGINT,
+ * review   TEXT,
+ * rating   FLOAT,
+ * date     DATE,
+ * FOREIGN KEY (user_id) REFERENCES online_cinema.users (id),
+ * FOREIGN KEY (movie_id) REFERENCES online_cinema.movies (id)
+ * );
+ */
+
+
 package org.online.cinema.ratings.entity;
 
 import jakarta.persistence.*;

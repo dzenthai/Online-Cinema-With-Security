@@ -1,3 +1,13 @@
+/**
+ *CREATE TABLE online_cinema.actors
+ * (
+ * id           SERIAL PRIMARY KEY NOT NULL,
+ * first_name   VARCHAR(128),
+ * last_name    VARCHAR(128),
+ * age          INT,
+ * );
+ */
+
 package org.online.cinema.actor.entity;
 
 import jakarta.persistence.*;
@@ -22,6 +32,15 @@ public class Actor {
     private String lastName;
     @Column(name = "age")
     private int age;
+    /**
+     * CREATE TABLE online_cinema.movie_actors
+     * (
+     * movie_id BIGINT,
+     * actor_id BIGINT,
+     * FOREIGN KEY (movie_id) REFERENCES online_cinema.movies (id),
+     * FOREIGN KEY (actor_id) REFERENCES online_cinema.actors (id)
+     * );
+     */
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinTable(schema = "online_cinema", name = "movie_actors",
             joinColumns = @JoinColumn(name = "actor_id"),

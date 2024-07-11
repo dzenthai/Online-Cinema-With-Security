@@ -44,16 +44,13 @@ public class MovieController {
         }
     }
 
-    @GetMapping("/movies")
-    public List<MovieDTO> getAllMovies() {
-        log.info("Getting all movies from database");
-        return movieService.getAllMovies()
-                .stream()
-                .sorted(Comparator.comparing(MovieDTO::getRating).reversed())
-                .toList();
+    @GetMapping("/movies/preferences")
+    public List<MovieDTO> getMoviesByUserPreference() {
+        log.info("Getting all movies based on user preferences");
+        return movieService.getMoviesByUserPreference();
     }
 
-    @GetMapping("/movies/{genre}")
+    @GetMapping("/movies/genre/{genre}")
     public List<MovieDTO> getMoviesByGenre(@PathVariable String genre) {
 
         List<MovieDTO> movies = movieService.getMoviesByGenre(genre);

@@ -80,13 +80,6 @@ public class MovieService {
     }
 
     @Transactional
-    public List<MovieDTO> getAllMovies() {
-        List<Movie> movies = movieRepository.findAll();
-        log.info("Getting all movies from database");
-        return movies.stream().map(this::convertToDTO).collect(Collectors.toList());
-    }
-
-    @Transactional
     public List<MovieDTO> getMoviesByGenre(String genre) {
 
         List<Movie> movies = movieRepository.findByGenre(genre)
@@ -138,6 +131,51 @@ public class MovieService {
                 .toList();
 
         log.info("Getting all movies by newness");
+        return movies.stream().map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<MovieDTO> getMoviesByUserPreference() {
+
+        User user = null;
+        String email = this.contextHolder.getCurrentEmail();
+        Optional<User> userOptional = this.userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            log.info("Getting user with email={}, to get movies based on user preferences.", email);
+            user = userOptional.get();
+        } else {
+            throw new UserException("User with email %s not found".formatted(email));
+        }
+
+
+        List<String> favoriteGenres = user.getMovies()
+                .stream()
+                .map(Movie::getGenre)
+                .toList();
+
+        List<String> favoriteMovies = user.getMovies()
+                .stream()
+                .map(Movie::getTitle)
+                .toList();
+
+        User finalUser = user;
+
+        List<Movie> movies = movieRepository.findAll()
+                .stream()
+                .filter(movie -> !favoriteMovies.contains(movie.getTitle()))
+                .filter(movie -> favoriteGenres.contains(movie.getGenre()))
+                .filter(movie -> {
+                    if (!finalUser.getRole().contains("SUBSCRIBED")) {
+                        return !movie.isSubscribeOnly();
+                    }
+                    return favoriteGenres.contains(movie.getGenre()) && !favoriteMovies.contains(movie.getTitle());
+                })
+                .sorted(Comparator.comparing(Movie::getRating).reversed())
+                .toList();
+
+        log.info("");
+
         return movies.stream().map(this::convertToDTO)
                 .collect(Collectors.toList());
     }

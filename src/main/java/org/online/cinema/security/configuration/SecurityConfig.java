@@ -61,6 +61,7 @@ public class SecurityConfig {
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
                 .build();
     }
+
     @Bean
     public HttpSessionIdResolver httpSessionIdResolver() {
         CookieHttpSessionIdResolver resolver = new CookieHttpSessionIdResolver();

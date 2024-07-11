@@ -86,7 +86,16 @@ public class RatingService {
                     .date(date)
                     .build();
 
+            if (ratingInputDTO.getRating()<1 || ratingInputDTO.getRating()>10) {
+                throw new RatingException("The rating cannot be 0 or greater than 10");
+            }
+
+            if (ratingInputDTO.getRating()>=7) {
+                user.addMovie(movie);
+            }
+
             ratingToUpdate = ratingRepository.save(ratingToUpdate);
+
             log.info("Saving rating with id={} to rating database", ratingToUpdate.getId());
         } else {
             ratingToUpdate = existingRatings.getFirst();
@@ -94,6 +103,16 @@ public class RatingService {
             ratingToUpdate.setReview(ratingInputDTO.getReview());
             ratingToUpdate.setRating(ratingInputDTO.getRating());
             ratingToUpdate.setDate(new Date());
+
+            if (ratingInputDTO.getRating()<1 || ratingInputDTO.getRating()>10) {
+                throw new RatingException("The rating cannot be 0 or greater than 10");
+            }
+
+            if (ratingInputDTO.getRating()>=7) {
+                user.addMovie(movie);
+            } else {
+                user.removeMovie(movie);
+            }
 
             ratingToUpdate = ratingRepository.save(ratingToUpdate);
 
@@ -111,9 +130,11 @@ public class RatingService {
 
         log.info("Setting the average rating for the movie={}, average rating={}", movie.getId(), averageRating);
 
-        movieRepository.save(movie);
+            movieRepository.save(movie);
 
-        return ratingToUpdate;
+            return ratingToUpdate;
+
+
     }
 
     private RatingOutputDTO convertToDTO(Rating rating) {
