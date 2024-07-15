@@ -171,7 +171,7 @@ public class MovieService {
                     }
                     return favoriteGenres.contains(movie.getGenre()) && !favoriteMovies.contains(movie.getTitle());
                 })
-                .sorted(Comparator.comparing(Movie::getRating).reversed())
+                .filter(movie -> movie.getRating()>=7)
                 .toList();
 
         log.info("");
