@@ -95,3 +95,13 @@ Ensure you have Docker installed on your system.
 
    Swagger UI provides a detailed overview of available endpoints and their functionality.
 
+## Conclusion
+
+Thank you for exploring Online Cinema With Security! This project has been a personal endeavor to explore and implement features like user authentication, personalized recommendations, and more, using technologies such as Spring Boot, PostgreSQL, OpenAI API, Redis and Docker.
+
+Feel free to delve into the codebase, experiment with the application, or use it as inspiration for your own projects. Your interest and feedback are greatly appreciated as I continue to develop and refine this pet project.
+
+For any questions or suggestions, you can reach out to me via email at [dzenthai@proton.me](mailto:dzenthai@proton.me).
+
+Happy coding and exploring the world of online cinema!
+
