@@ -1,5 +1,7 @@
 package org.online.cinema.actor.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.online.cinema.actor.entity.Actor;
 import org.online.cinema.actor.service.ActorService;
@@ -18,11 +20,17 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequestMapping("/api")
+@Tag(name = "Actor Controller")
 public class ActorController {
 
     @Autowired
     private ActorService actorService;
 
+    @Operation(
+            summary = "Retrieve all actors from the database.",
+            description = "This method allows you to retrieve all actors" +
+                    " from the online_cinema.actors database that you have created."
+    )
     @GetMapping("/actors/{id}")
     public ActorDTO getActorById(@PathVariable Long id) {
 

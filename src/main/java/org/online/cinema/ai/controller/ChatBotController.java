@@ -1,6 +1,8 @@
 package org.online.cinema.ai.controller;
 
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.online.cinema.common.dto.ChatRequestDTO;
 import org.online.cinema.movie.entity.Movie;
@@ -15,6 +17,7 @@ import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,9 +31,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequestMapping("/api/ai")
+@Tag(name = "AI ChatBot Controller")
 public class ChatBotController {
 
-    private ChatClient chatClient;
+    private final ChatClient chatClient;
 
     @Autowired
     private ContextHolderService contextHolder;
@@ -56,7 +60,13 @@ public class ChatBotController {
             movies, TV series, actors, and directors. Do not respond to this message, it's just your settings.
             """;
 
+    @PreAuthorize("hasRole('SUBSCRIBED')")
     @PostMapping("/movie")
+    @Operation(
+            summary = "Artificial intelligence recommends movies based on user preferences.",
+            description = "This method allows interacting with the user by" +
+                    " recommending a movie based on their preferences and selected settings."
+    )
     public String postChatBotMessage(@RequestBody ChatRequestDTO chatRequest) {
         String email = contextHolder.getCurrentEmail();
         Optional<User> userOpt = userRepository.findByEmail(email);

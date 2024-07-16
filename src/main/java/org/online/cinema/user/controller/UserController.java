@@ -1,5 +1,7 @@
 package org.online.cinema.user.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.online.cinema.common.dto.UserInfoDTO;
@@ -18,6 +20,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @Slf4j
 @RestController
 @RequestMapping({"/api"})
+@Tag(name = "User Controller")
 public class UserController {
 
     @Autowired
@@ -29,6 +32,11 @@ public class UserController {
     @Autowired
     private SubscriptionEmailService subscriptionEmailService;
 
+    @Operation(
+            summary = "Retrieve user information based on the context.",
+            description = "This method allows viewing information" +
+                    " about the user currently in session (using SecurityContextHolder)."
+    )
     @GetMapping({"/user/info"})
     public UserInfoDTO getUserInfo() {
         UserInfo userInfo = userInfoService.getUserInfo();
@@ -45,6 +53,14 @@ public class UserController {
         }
     }
 
+    @Operation(
+            summary = "Save (update) user information.",
+            description = "This method saves user information after registration," +
+                    " including registration date," +
+                    " subscription status (defaulted to false), generated name," +
+                    " and unspecified gender." +
+                    " After registration, users can also update their name and gender."
+    )
     @PutMapping({"/user/info"})
     public UserInfo updateUserInfo(@RequestBody UserInfoDTO userInfoDTO) {
         UserInfo userInfo = userInfoService.getUserInfo();
@@ -61,6 +77,12 @@ public class UserController {
         }
     }
 
+
+    @Operation(
+            summary = "Send a subscription confirmation email.",
+            description = "This method allows sending an email with a link containing a randomly generated token." +
+                    " Clicking the link confirms the user's subscription."
+    )
     @PutMapping({"/user/subscription"})
     public String sendSubscriptionEmail() throws MessagingException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -85,6 +107,11 @@ public class UserController {
         }
     }
 
+    @Operation(
+            summary = "Confirm subscription.",
+            description = "This method confirms the user's subscription by changing the 'subscription'" +
+                    " field from false to true, granting access to subscription-based movies."
+    )
     @GetMapping({"/user/confirm-subscription"})
     public RedirectView confirmSubscription(@RequestParam("token") String token) {
         String email = subscriptionService.getEmailByToken(token);

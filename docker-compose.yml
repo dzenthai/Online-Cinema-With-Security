@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  app:
+    image: adoptopenjdk/openjdk21:alpine-jre
+    container_name: online-cinema-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/online_cinema_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_REDIS_HOST: redis
+    volumes:
+      - ./target/online-cinema.jar:/app/app.jar
+    command: ["java", "-jar", "app.jar"]
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:latest
+    container_name: online-cinema-db
+    environment:
+      POSTGRES_DB: online_cinema_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:latest
+    container_name: online-cinema-redis
+    ports:
+      - "6379:6379"

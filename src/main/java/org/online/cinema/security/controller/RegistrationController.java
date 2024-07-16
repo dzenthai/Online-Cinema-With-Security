@@ -1,5 +1,7 @@
 package org.online.cinema.security.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
@@ -28,6 +30,7 @@ import java.util.Objects;
 @Slf4j
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Registration Controller")
 public class RegistrationController {
 
     @Autowired
@@ -45,6 +48,11 @@ public class RegistrationController {
     @Value("${default.user.role}")
     private String defaultRole;
 
+    @Operation(
+            summary = "Register a user",
+            description = "This method allows you to register a user," +
+                    " then a code is sent for email verification (the method includes validation)."
+    )
     @PostMapping("/registration")
     public String registerUser(@Valid @RequestBody UserDTO user, BindingResult bindingResult) throws MessagingException {
 
@@ -114,6 +122,11 @@ public class RegistrationController {
     }
 
 
+    @Operation(
+            summary = "Verify a user",
+            description = "This method verifies the user's email," +
+                    " completing the registration process."
+    )
     @SneakyThrows
     @PostMapping("/verify")
     public ResponseEntity<String> verifyUser(@RequestBody Map<String, String> request) {

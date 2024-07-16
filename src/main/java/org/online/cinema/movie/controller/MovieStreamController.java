@@ -1,5 +1,7 @@
 package org.online.cinema.movie.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.online.cinema.common.exception.MovieException;
 import org.online.cinema.common.exception.UserException;
@@ -25,6 +27,7 @@ import java.io.InputStream;
 @Slf4j
 @RestController
 @RequestMapping("/api/stream")
+@Tag(name = "Movie Stream Controller")
 public class MovieStreamController {
 
     @Autowired
@@ -36,6 +39,10 @@ public class MovieStreamController {
     @Value("${s3.bucketName}")
     private String bucketName;
 
+    @Operation(
+            summary = "View movie by id.",
+            description = "This method allows you to view a movie by id."
+    )
     @GetMapping(value = "/movie/{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<Resource> streamMovieById(@PathVariable Long id) {
         try {

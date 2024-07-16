@@ -1,5 +1,7 @@
 package org.online.cinema.director.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.online.cinema.common.dto.DirectorDTO;
 import org.online.cinema.common.dto.MovieDTO;
@@ -18,11 +20,17 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequestMapping("/api")
+@Tag(name = "Director Controller")
 public class DirectorController {
 
     @Autowired
     private DirectorService directorService;
 
+    @Operation(
+            summary = "Retrieve all directors from the database.",
+            description = "This method allows you to retrieve all directors" +
+                    " from the online_cinema.directors database that you have created."
+    )
     @GetMapping("/directors/{id}")
     public DirectorDTO getDirectorById(@PathVariable Long id) {
 
